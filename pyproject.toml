@@ -1,0 +1,39 @@
+[project]
+name = "cadence"
+version = "0.1.0"
+description = "A self-improving appointment scheduling agent for clinics"
+requires-python = ">=3.10"
+dependencies = [
+    "langgraph>=0.2.0",
+    "langchain-core>=0.3.0",
+    "langchain-openai>=0.2.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.11"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# `runs` and `policies` are data directories, not packages. `evaluation` is
+# spelled out rather than `eval` so it does not collide with the builtin.
+[tool.setuptools]
+packages = ["cadence", "evaluation", "improve"]
+
+[tool.ruff]
+line-length = 96
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "DTZ", "BLE"]
+
+[tool.ruff.lint.per-file-ignores]
+# These four catch broadly on purpose: a model call can fail in many ways, and
+# every one of them must fail closed rather than take a scenario down or
+# silently pass it. The reason is documented at each site.
+"cadence/triage.py" = ["BLE001"]
+"evaluation/judge.py" = ["BLE001"]
+"evaluation/runner.py" = ["BLE001"]
+"improve/reflect.py" = ["BLE001"]
